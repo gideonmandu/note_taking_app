@@ -1,4 +1,5 @@
-FROM python:3.9.6-slim-buster
+FROM python:3.10-rc-buster
+
 
 RUN mkdir app
 WORKDIR /app
