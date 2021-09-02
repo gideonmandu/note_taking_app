@@ -25,6 +25,8 @@ services:
       - '/app/node_modules'
     ports: 
       - 8080:8080
+    # command: 
+    #   "yarn serve"
 
   db:
     image: postgres:13-alpine

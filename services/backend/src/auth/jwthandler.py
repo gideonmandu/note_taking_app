@@ -1,6 +1,7 @@
 from __future__ import annotations
 import os
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
@@ -13,6 +14,7 @@ from src.schemas.token import TokenData
 from src.schemas.users import UserOutSchema
 from src.database.models import Users
 
+load_dotenv()
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -39,7 +41,8 @@ class OAuth2PasswordBearerCookie(OAuth2):
             flows=flows, scheme_name=scheme_name, auto_error=auto_error
         )
 
-    async def __call__(self, request: Request) -> str | None:
+    async def __call__(self, request) -> str | None:
+    # async def __call__(self, request: Request) -> str | None:
         authorization: str = request.cookies.get("Authorization")
         scheme, param = get_authorization_scheme_param(authorization)
 
@@ -58,7 +61,7 @@ class OAuth2PasswordBearerCookie(OAuth2):
 security = OAuth2PasswordBearerCookie(token_url="/login")
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta = None):
     """Generates access token for user
 
     Args:

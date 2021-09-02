@@ -1,10 +1,7 @@
-from test.confest import test_app
+from tests.confest import test_app
 
 
-client = test_app()
-
-
-def test_home():
-    response = client.get('/')
+def test_home(test_app):
+    response = test_app.get('/')
     assert response.status_code == 200
     assert response.json() == {"message": "hello, world!"}

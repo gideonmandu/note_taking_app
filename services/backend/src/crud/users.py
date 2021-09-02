@@ -27,7 +27,9 @@ async def create_user(user) -> UserOutSchema:
     try:
         user_obj = await Users.create(**user.dict(exclude_unset=True))
     except IntegrityError:
-        raise HTTPException(status_code=401, detail=f"Sorry, that username already exists")
+        raise HTTPException(
+            status_code=401, detail=f"Sorry, that username already exists"
+        )
     return await UserOutSchema.from_tortoise_orm(user_obj)
 
 
@@ -48,7 +50,9 @@ async def delete_user(user_id, current_user) -> Status:
     """
     error_msg = f"User {user_id} not found."
     try:
-        db_user = await UserOutSchema.from_queryset_single(USers.get(id=user_id))
+        db_user = await UserOutSchema.from_queryset_single(
+            Users.get(id=user_id)
+        )
     except DoesNotExist:
         raise HTTPException(status_code=404, detail=error_msg)
     if db_user.id == current_user.id:

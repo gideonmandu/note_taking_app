@@ -11,4 +11,4 @@ RUN npm install -g -f yarn
 RUN yarn global add @vue/cli
 RUN yarn install --prod
 
-CMD ['npm', 'run', 'serve']
+CMD ['yarn', 'serve']
