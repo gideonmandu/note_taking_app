@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
-from fastapi.security import OAuth2
+from fastapi.security import OAuth2, OAuth2PasswordBearer
 from fastapi.security.utils import get_authorization_scheme_param
 from jose import JWTError, jwt
 from tortoise.exceptions import DoesNotExist
@@ -41,8 +41,8 @@ class OAuth2PasswordBearerCookie(OAuth2):
             flows=flows, scheme_name=scheme_name, auto_error=auto_error
         )
 
-    async def __call__(self, request) -> str | None:
-    # async def __call__(self, request: Request) -> str | None:
+    # async def __call__(self, request) -> str | None:
+    async def __call__(self, request: Request) -> str | None:
         authorization: str = request.cookies.get("Authorization")
         scheme, param = get_authorization_scheme_param(authorization)
 
@@ -59,6 +59,7 @@ class OAuth2PasswordBearerCookie(OAuth2):
 
 
 security = OAuth2PasswordBearerCookie(token_url="/login")
+security = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None):

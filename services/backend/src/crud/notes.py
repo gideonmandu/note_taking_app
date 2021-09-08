@@ -12,7 +12,7 @@ async def get_notes():
     Returns:
         [type]: [description]
     """
-    return await NoteOutSchema.from_queryset(Notes.all)
+    return await NoteOutSchema.from_queryset(Notes.all())
 
 
 async def get_note(note_id) -> NoteOutSchema:
