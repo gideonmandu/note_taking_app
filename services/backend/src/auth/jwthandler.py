@@ -2,6 +2,7 @@ from __future__ import annotations
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from http import HTTPStatus
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
@@ -21,44 +22,52 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 class OAuth2PasswordBearerCookie(OAuth2):
-    """Reads cookie sent in request header of protected routes
-    ensure cookie presence and returns token in it.
-
-    Args:
-        OAuth2 class: fastapi oauth2 class
-    """
     def __init__(
         self,
-        token_url: str,
+        tokenUrl: str,
         scheme_name: str = None,
         scopes: dict = None,
         auto_error: bool = True,
     ):
         if not scopes:
             scopes = {}
-        flows = OAuthFlowsModel(password={"tokenUrl": token_url, "scopes": scopes})
-        super().__init__(
-            flows=flows, scheme_name=scheme_name, auto_error=auto_error
+        flows = OAuthFlowsModel(password={"tokenUrl": tokenUrl, "scopes": scopes})
+        super().__init__(flows=flows, scheme_name=scheme_name, auto_error=auto_error)
+
+    async def __call__(self, request: Request) -> Optional[str]:
+        header_authorization: str = request.headers.get("Authorization")
+        cookie_authorization: str = request.cookies.get("Authorization")
+
+        header_scheme, header_param = get_authorization_scheme_param(
+            header_authorization
+        )
+        cookie_scheme, cookie_param = get_authorization_scheme_param(
+            cookie_authorization
         )
 
-    # async def __call__(self, request) -> str | None:
-    async def __call__(self, request: Request) -> str | None:
-        authorization: str = request.cookies.get("Authorization")
-        scheme, param = get_authorization_scheme_param(authorization)
+        if header_scheme.lower() == "bearer":
+            authorization = True
+            scheme = header_scheme
+            param = header_param
+
+        elif cookie_scheme.lower() == "bearer":
+            authorization = True
+            scheme = cookie_scheme
+            param = cookie_param
+
+        else:
+            authorization = False
 
         if not authorization or scheme.lower() != "bearer":
             if self.auto_error:
                 raise HTTPException(
-                    status_code=401,
-                    detail="Not authenticated",
-                    headers={"WWW-Authenticate": "Bearer"},
+                    status_code=HTTPStatus.UNAUTHORIZED, detail="Not authenticated", headers={"WWW-Authenticate": "Bearer"},
                 )
             else:
                 return None
         return param
 
-
-security = OAuth2PasswordBearerCookie(token_url="/login")
+# security = OAuth2PasswordBearerCookie(tokenUrl="/login")
 security = OAuth2PasswordBearer(tokenUrl="/login")
 
 

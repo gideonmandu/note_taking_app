@@ -1,4 +1,5 @@
 from datetime import timedelta
+from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
@@ -47,16 +48,16 @@ async def login(user: OAuth2PasswordRequestForm = Depends()):
         "message": "You're successfully logged in. Welcome back!"
     }
     response = JSONResponse(content=content)
-    # response.set_cookie(
-    #     "Authorization",
-    #     value=f"Bearer {token}",
-    #     httponly=True,
-    #     max_age=1800,
-    #     expires=1800,
-    #     samesite="Lax",
-    #     # set True in Production
-    #     secure=False,
-    # )
+    response.set_cookie(
+        "Authorization",
+        value=f"Bearer {token}",
+        httponly=True,
+        max_age=1800,
+        expires=1800,
+        samesite="Lax",
+        # set True in Production
+        secure=False,
+    )
     return response
 
 
@@ -74,7 +75,7 @@ async def read_users_me(
 @router.delete(
     "/user/{user_id}",
     response_model=Status,
-    responses={404: {"model": HTTPNotFoundError}},
+    responses={HTTPStatus.NOT_FOUND: {"model": HTTPNotFoundError}},
     dependencies=[Depends(get_current_user)],
 )
 async def delete_user(

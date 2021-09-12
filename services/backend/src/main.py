@@ -35,6 +35,6 @@ app = get_application()
 configure_routes(app)
 register_tortoise(app, config=TORTOISE_ORM, generate_schemas=False)
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 def home():
     return {"message": "hello, world!"}

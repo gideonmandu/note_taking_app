@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from http import HTTPStatus
 from passlib.context import CryptContext
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
@@ -26,9 +27,9 @@ async def create_user(user) -> UserOutSchema:
     
     try:
         user_obj = await Users.create(**user.dict(exclude_unset=True))
-    except IntegrityError:
+    except IntegrityError as e:
         raise HTTPException(
-            status_code=401, detail=f"Sorry, that username already exists"
+            status_code=HTTPStatus.NOT_ACCEPTABLE, detail=f"{e}Sorry, that username already exists"
         )
     return await UserOutSchema.from_tortoise_orm(user_obj)
 
@@ -54,10 +55,10 @@ async def delete_user(user_id, current_user) -> Status:
             Users.get(id=user_id)
         )
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=error_msg)
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=error_msg)
     if db_user.id == current_user.id:
         deleted_count = await Users.filter(id=user_id).delete()
         if not deleted_count:
-            raise HTTPException(status_code=404, detail=error_msg)
+            raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=error_msg)
         return Status(message=f"Deleted user {user_id}.")
-    raise HTTPException(Status_code=403, detail=f"Not authorized to delete.")
+    raise HTTPException(Status_code=HTTPStatus.UNAUTHORIZED, detail=f"Not authorized to delete.")

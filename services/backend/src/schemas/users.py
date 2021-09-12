@@ -10,11 +10,9 @@ UserInSchema = pydantic_model_creator(
 
 # retrieving users to be used outside in app
 UserOutSchema = pydantic_model_creator(
-    Users, name="UserOut", exclude=["password", "created_at", "modified_at"]
+    Users, name="UserOut", exclude=["password"]
 )
 
 
 # retrieved users to be used in app
-UserDatabaseSchema = pydantic_model_creator(
-    Users, name="User", exclude=["created_at", "modified_at"]
-)
+UserDatabaseSchema = pydantic_model_creator(Users, name="User")

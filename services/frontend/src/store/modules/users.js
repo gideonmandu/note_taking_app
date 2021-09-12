@@ -1,6 +1,8 @@
 import axios from "axios";
+let headers;
 
 export default {
+  
   state: {
     user: null,
   },
@@ -17,7 +19,9 @@ export default {
       await dispatch("logIn", UserForm);
     },
     async logIn({ dispatch }, user) {
-      await axios.post("login", user);
+      const res = await axios.post("login", user);
+      headers = await res.headers;
+      console.error(JSON.stringify(headers));
       await dispatch("viewMe");
     },
     async viewMe({ commit }) {
@@ -42,3 +46,5 @@ export default {
     },
   },
 };
+
+// headers: {'X-Requested-With': 'XMLHttpRequest', 'Authorization': 'Bearer tokenString'}
