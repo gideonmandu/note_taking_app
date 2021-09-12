@@ -1,53 +1,44 @@
-import { logicalExpression } from "@babel/types";
 import axios from "axios";
 
-const state = {
+export default {
+  state: {
     user: null,
-},
-
-const getters = {
-    isAuthenticated: state => !!state.user,
-    stateUser: state => state.user
-},
-
-const actions = {
-    async register({dispatch}, form) {
-        await axios.post('register', form);
-        let UserForm = new FormData();
-        UserForm.append('username', form.username);
-        UserForm.append('password', form.password);
-        await dispatch('login', UserForm);
+  },
+  getters: {
+    isAuthenticated: (state) => !!state.user,
+    stateUser: (state) => state.user,
+  },
+  actions: {
+    async register({ dispatch }, form) {
+      await axios.post("notes", form);
+      let UserForm = new FormData();
+      UserForm.append("username", form.username);
+      UserForm.append("password", form.password);
+      await dispatch("logIn", UserForm);
     },
-    async logicalExpression({dispatch}, user) {
-        await axios.post('login', user);
-        await commit('setUser', data);
+    async logIn({ dispatch }, user) {
+      await axios.post("login", user);
+      await dispatch("viewMe");
     },
-    async viewMe({commit}) {
-        let {data} = await axios.get('users/whoami');
-        await commit('setUser', data);
+    async viewMe({ commit }) {
+      let { data } = await axios.get("users/whoami");
+      commit("setUser", data);
     },
-    // eslint-disable-next-line no-empty-pattern
-    async deleteUser({}, id) {
-        await axios.delete(`user/${id}`);
+    // eslint-disabled-next-line no-empty-pattern
+    async deleteNote({}, id) {
+      await axios.delete(`user/${id}`);
     },
-    async logOut({commit}) {
-        let user = null;
-        commit('logout', user);
-    }
-};
-
-const mutations = {
-    stateUser(state, username) {
-        state.user = username;
+    async logOut({ commit }) {
+      let user = null;
+      commit("logout", user);
+    },
+  },
+  mutations: {
+    setUser(state, username) {
+      state.user = username;
     },
     logout(state, user) {
-        state.user = user;
+      state.user = user;
     },
-};
-
-export default {
-    state,
-    getters,
-    actions,
-    mutations
+  },
 };
