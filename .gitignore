@@ -209,3 +209,8 @@ docs/_book
 
 # TODO: where does this rule come from?
 test/
+
+# db
+*.db
+*.db-shm
+*.db-wal
