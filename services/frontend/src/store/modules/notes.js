@@ -11,7 +11,7 @@ export default {
   },
   actions: {
     async createNote({ dispatch }, note) {
-      await axios.post("notes", note);
+      await axios.post("note", note);
       await dispatch("getNotes");
     },
     async getNotes({ commit }) {

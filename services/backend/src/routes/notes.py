@@ -63,7 +63,7 @@ async def update_note(
 
 
 @router.delete(
-    "/note/{note_id}",
+    "/{note_id}",
     response_model=Status,
     responses={HTTPStatus.NOT_FOUND: {"model": HTTPNotFoundError}},
     dependencies=[Depends(get_current_user)],

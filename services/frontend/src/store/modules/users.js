@@ -12,7 +12,7 @@ export default {
   },
   actions: {
     async register({ dispatch }, form) {
-      await axios.post("notes", form);
+      await axios.post("register", form);
       let UserForm = new FormData();
       UserForm.append("username", form.username);
       UserForm.append("password", form.password);
@@ -21,11 +21,11 @@ export default {
     async logIn({ dispatch }, user) {
       const res = await axios.post("login", user);
       headers = await res.headers;
-      console.error(JSON.stringify(headers));
+      console.error(headers);
       await dispatch("viewMe");
     },
     async viewMe({ commit }) {
-      let { data } = await axios.get("users/whoami");
+      let { data } = await axios.get("user/whoami");
       commit("setUser", data);
     },
     // eslint-disabled-next-line no-empty-pattern
