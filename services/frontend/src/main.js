@@ -6,6 +6,12 @@ import store from "./store";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:5000/"; // Backend
+// axios.interceptors.request.use(config => {
+//   if (config.data instanceof FormData) {
+//     Object.assign(config.headers, config.data.getHeaders());
+//   }
+//   return config;
+// });
 
 axios.interceptors.response.use(undefined, function (error) {
   if (error) {

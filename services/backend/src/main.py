@@ -10,6 +10,7 @@ from src.database.config import TORTOISE_ORM
 # Enable schema to read r/ship btw models
 Tortoise.init_models(["src.database.models"], "models")
 from src.routes import users, notes
+from src.base import OAuth2PasswordBearerCookie
 
 load_dotenv()
 
