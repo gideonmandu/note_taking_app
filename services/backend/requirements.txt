@@ -1,0 +1,14 @@
+aerich
+asyncpg
+bcrypt
+fastapi
+passlib
+python-dotenv
+python-jose
+python-multipart
+tortoise-orm
+uvicorn
+
+# dev
+pytest
+requests
